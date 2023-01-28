@@ -5,92 +5,109 @@ const mysql = require("mysql");
 const config = require("../../database/config.js");
 const db = mysql.createConnection(config.databaseConfig);
 
-function verifyEmail (email)
+const find = require("../../schemas/users.js")
+
+// Verifica se o email existe na base de dados
+async function verifyEmail (email)
 {   
-    let error = false;
+    return new Promise((res) => {
+        let query = "SELECT email_User FROM tbl_Users WHERE email_User LIKE ?";
+        let variable = email;
 
-    db.query("SELECT email_User FROM tbl_Users WHERE email_User = '" + email + "'", function (db_error, db_res, db_fields){
-        if(!db_res[0].email_User)
-        {
-            error = true;
-        }  
-    });
-
-    return error;
+        db.query(query, [variable], function (db_error, db_res) {
+            if(!db_error) {
+                if(db_res != '')
+                {
+                    return res(true);
+                } 
+            }
+            else {
+                console.log(db_error)
+            }
+            return res(false);
+        });
+    }) 
 }
 
-function getDB_pass (email)
+// Requisita o hash da base de dados 
+async function getDB_pass (email)
 {
-    db.query("SELECT password_User FROM tbl_Users WHERE email_User = '" + email + "'", function (db_error, db_res, db_fields){
-        if(db_res[0].password_User)
-        {
-            pass = db_res[0].password_User;
-            return pass;
-        }  
-        else 
-        {
-            // Caso não encontre a senha
-            return true;
-        }
+    return new Promise ((res) => {
+        let query = "SELECT password_User FROM tbl_Users WHERE email_User LIKE ?";
+        let variable = email;
+
+        db.query(query, [variable], function (db_error, db_res) {
+            if(!db_error) {
+                if(db_res[0]) {
+                    return res(db_res[0].password_User);
+                }  
+            }
+            else {
+                console.log(db_error)
+            }
+            return res(false);
+        });
     });
 }
 
 async function verifyPassword (inputPass, dbPass)
 {
-    // Caso não tenha encontrado a senha
-    if(dbPass == true)
-    {
-        return dbPass;
-    }
-
-    const compare = await bcrypt.compare(inputPass, dbPass, function(error, result) {
-        if (error) {
-            return {error: error};
+    return new Promise((res) => {
+        // Caso não tenha encontrado a senha
+        if(!dbPass) {
+            return res(dbPass);
         }
-        else {
-            return result;
-        }
+        bcrypt.compare(inputPass, dbPass, function(error, result) {
+            if (error) {
+                return res(false);
+            }
+            else {
+                return res(result);
+            }
+        });
     })
-
 }
 
-async function login (body)
+async function login (body, res)
 {
-
     let email = body.email;
     let password = body.password;
 
-    if(!email || !password)
-    {
+    if(!email || !password) {
         return {error: 'Preencha todos os campos.'};
     }
 
-    let error = false;
-
     // Verifica Email e Senha
-    switch (error)
+    const email_check = await verifyEmail(email);
+    if(!email_check)
     {
-        case verifyEmail(db) == false:
-        case verifyPassword(password, getDB_pass(email, db)) == false:
-        {
-            error = true;
-            return error;
-        }
+        res.setHeader('Content-Type', 'application/json');
+        return {error:{login: 'Email ou senha incorretos.'}};
     }
-    let user_data;
 
-    db.query("SELECT id_User, name_User FROM tbl_Users WHERE email_User = '" + email + "'", function (db_error, db_res, db_fields) {
-        user_data = db_res;
-    })
-
+    const hashed = await getDB_pass(email);
+    const password_check = await verifyPassword(password, hashed)
+    console.log(hashed)
+    console.log(password_check)
+    if (!password_check)
+    {
+        res.setHeader('Content-Type', 'application/json');
+        return {error:{login: 'Email ou senha incorretos.'}};
+    }
+    
+    
+    const data = await find(email)
     db.end();
 
+    // Criação do Token de Login
     const Token = await wbtoken.sign({
-        id: user_data[0].id_User,
-        name: user_data[0].name_User
-    }, '@secretpass_2023@');
+        id: data.id_User,
+        name: data.name_User
+    }, process.env.WBTOKEN_PASS);
+
+    // Retorno de TOKEN 
     res.cookie('Token', Token)
     res.sendStatus(200)
-    // Retorno de TOKEN   
 }
+
 module.exports = login

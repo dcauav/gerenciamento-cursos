@@ -1,6 +1,6 @@
 module.exports.databaseConfig = {
     host     : 'localhost',
-    database : 'agendac',
+    database : 'grc_cursos',
     user     : 'root',
     password : '',
     port     : '3306'
