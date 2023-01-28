@@ -3,4 +3,4 @@ async function desconect(res) {
     res.redirect('/login');
 }
 
-exports.module = desconect;
+module.exports = desconect;

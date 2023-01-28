@@ -8,7 +8,7 @@ require('dotenv').config()
 // Controladores
 const login = require("./controllers/users/login");
 const logged = require("./controllers/users/logged");
-
+const desconect = require("./controllers/users/desconect");
 
 // Dependências
 const server = express();
@@ -18,8 +18,8 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(cookieParser());
 
 // Paginas
-server.get('/', logged, (req, res) => res.redirect("/"))
-server.get('/login', (req, res) => res.sendFile(__dirname+"/public/index.html"))
+server.get('/', logged, (req, res) => res.sendFile(__dirname+"/public/index.html"))
+server.get('/login', (req, res) => res.sendFile(__dirname+"/public/login.html"))
 
 // Rotas
 server.post('/api/users/login', async (req, res) => {

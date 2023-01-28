@@ -1,11 +1,10 @@
 const wbtoken = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 
-const mysql = require("mysql");
-const config = require("../../database/config.js");
-const db = mysql.createConnection(config.databaseConfig);
+const config = require("../../database/connection.js");
 
-const find = require("../../schemas/users.js")
+const find = require("../../schemas/users.js");
+const { connect } = require('../../database/connection.js');
 
 // Verifica se o email existe na base de dados
 async function verifyEmail (email)
@@ -13,19 +12,22 @@ async function verifyEmail (email)
     return new Promise((res) => {
         let query = "SELECT email_User FROM tbl_Users WHERE email_User LIKE ?";
         let variable = email;
+        
+        config.connect(function(err) {
+            config.query(query, [variable], function (db_error, db_res) {
+                if(!db_error) {
+                    if(db_res != '')
+                    {
+                        return res(true);
+                    } 
+                }
+                else {
+                    console.log(db_error)
+                }
+                return res(false);
+            })
+        })
 
-        db.query(query, [variable], function (db_error, db_res) {
-            if(!db_error) {
-                if(db_res != '')
-                {
-                    return res(true);
-                } 
-            }
-            else {
-                console.log(db_error)
-            }
-            return res(false);
-        });
     }) 
 }
 
@@ -36,16 +38,18 @@ async function getDB_pass (email)
         let query = "SELECT password_User FROM tbl_Users WHERE email_User LIKE ?";
         let variable = email;
 
-        db.query(query, [variable], function (db_error, db_res) {
-            if(!db_error) {
-                if(db_res[0]) {
-                    return res(db_res[0].password_User);
-                }  
-            }
-            else {
-                console.log(db_error)
-            }
-            return res(false);
+        config.connect(function(err) {
+            config.query(query, [variable], function (db_error, db_res) {
+                if(!db_error) {
+                    if(db_res) {
+                        return res(db_res[0].password_User);
+                    }  
+                }
+                else {
+                    console.log(db_error)
+                }
+                return res(false);
+            })
         });
     });
 }
@@ -79,6 +83,7 @@ async function login (body, res)
 
     // Verifica Email e Senha
     const email_check = await verifyEmail(email);
+
     if(!email_check)
     {
         res.setHeader('Content-Type', 'application/json');
@@ -87,8 +92,7 @@ async function login (body, res)
 
     const hashed = await getDB_pass(email);
     const password_check = await verifyPassword(password, hashed)
-    console.log(hashed)
-    console.log(password_check)
+
     if (!password_check)
     {
         res.setHeader('Content-Type', 'application/json');
@@ -97,7 +101,7 @@ async function login (body, res)
     
     
     const data = await find(email)
-    db.end();
+    
 
     // Criação do Token de Login
     const Token = await wbtoken.sign({
@@ -108,6 +112,8 @@ async function login (body, res)
     // Retorno de TOKEN 
     res.cookie('Token', Token)
     res.sendStatus(200)
+
+    return;
 }
 
 module.exports = login

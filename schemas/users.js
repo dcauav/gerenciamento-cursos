@@ -1,8 +1,5 @@
 
-const mysql = require("mysql");
-const config = require("../database/config.js");
-const db = mysql.createConnection(config.databaseConfig);
-
+const config = require("../database/connection.js");
 
 // Busca os dados do usuário
 async function find (email) {
@@ -11,14 +8,16 @@ async function find (email) {
     let variable = email;
 
     return new Promise((res, error) => {
-        db.query(query, variable, (db_error, db_res) => {
-            if(db_error)
-            {
-                return error(db_error);
-            }
-            return res(db_res);
-        })
-    }) 
+        config.connect(function(err) {
+            config.query(query, variable, (db_error, db_res) => {
+                if(db_error)
+                {
+                    return error(db_error);
+                }
+                return res(db_res);
+            })
+        });
+    });
 
 }
 
