@@ -1,0 +1,13 @@
+<section id="app">
+    
+    <div id="courses-list">
+        
+        <% list.forEach(function(course_c){ %>
+
+            <%-  include('../assets/components/course_c.ejs', {course: course_c}); %>
+
+        <% }); %>
+
+
+    </div>
+</section>
