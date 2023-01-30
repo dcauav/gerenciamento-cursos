@@ -1,13 +1,28 @@
-<section id="app">
-    
-    <div id="courses-list">
-        
-        <% list.forEach(function(course_c){ %>
+<%- include('../assets/views/parts/header.ejs'); %>
+<script type="text/javascript" src="/assets/js/course/course_search.js"></script>
 
-            <%-  include('../assets/components/course_c.ejs', {course: course_c}); %>
+<section id="app" class="w-full">
+    <%- include('../assets/views/parts/dashboard.ejs'); %>
+    <div class="w-full bg-blue-600" id="courses-list">
+        <div class="bg-gray-800 flex flex-row justify-between items-center">
+            <p class="uppercase px-4 text-white "><%= title %></p>
+            <div class="flex flex-col py-4 px-8 items-end">
+                <div class="space-x-2 flex flex-row items-center">
+                    <input id="search-input" class="rounded-md bg-white px-2 leading-9 text-center" />
+                    <button class="rounded-md bg-blue-600 py-2 px-12 text-white hover:bg-blue-500 active:bg-blue-700 uppercase" onclick="c_search()">pesquisar</button>
+                    <a class="rounded-md bg-blue-600 py-2 px-12 text-white hover:bg-blue-500 active:bg-blue-700 uppercase" href="/cursos/create">novo</a>
 
-        <% }); %>
+                </div>
+                
+            </div>
+        </div>
+        <div class="grid w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+            <% list.forEach(function(course_c){ %>
 
+                <%-  include('../assets/components/course_c.ejs', {course: course_c}); %>
 
+            <% }); %>  
+        </div>
     </div>
 </section>
+<%- include('../assets/views/parts/footer.ejs'); %>

@@ -4,5 +4,5 @@ function c_edit () {
 
     const id = param.pathname.replace("/cursos/info/id=", "")
 
-    document.getElementById("info-footer").append("<script> window.location.replace(/cursos/editar/id=" + id + ")</script>");
+    window.location.replace('/cursos/editar/id=' + id )
 }

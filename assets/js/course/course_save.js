@@ -25,6 +25,8 @@ async function c_save() {
         img_cour: JSON.stringify(url.data).replaceAll('"', ""),
         id_cour: id
     })
-    .then()
+    .then((res) =>
+        window.location.replace("/cursos/info/id=" + id)
+    )
     .catch((error) => console.log(error))
 }

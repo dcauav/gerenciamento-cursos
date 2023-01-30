@@ -2,9 +2,7 @@ const wbtoken = require('jsonwebtoken');
 const bcrypt = require("bcrypt");
 
 const config = require("../../database/connection.js");
-
 const schema = require("../../schemas/users.js");
-const { connect } = require('../../database/connection.js');
 
 // Verifica se o email existe na base de dados
 async function verifyEmail (email)
@@ -13,21 +11,18 @@ async function verifyEmail (email)
         let query = "SELECT email_User FROM tbl_Users WHERE email_User LIKE ?";
         let variable = email;
         
-        config.connect(function(err) {
-            config.query(query, [variable], function (db_error, db_res) {
-                if(!db_error) {
-                    if(db_res != '')
-                    {
-                        return res(true);
-                    } 
-                }
-                else {
-                    console.log(db_error)
-                }
-                return res(false);
-            })
+        config.query(query, variable, function (db_error, db_res) {
+            if(!db_error) {
+                if(db_res != '')
+                {
+                    return res(true);
+                } 
+            }
+            else {
+                console.log(db_error)
+            }
+            return res(false);
         })
-
     }) 
 }
 
@@ -38,19 +33,17 @@ async function getDB_pass (email)
         let query = "SELECT password_User FROM tbl_Users WHERE email_User LIKE ?";
         let variable = email;
 
-        config.connect(function(err) {
-            config.query(query, [variable], function (db_error, db_res) {
-                if(!db_error) {
-                    if(db_res) {
-                        return res(db_res[0].password_User);
-                    }  
-                }
-                else {
-                    console.log(db_error)
-                }
-                return res(false);
-            })
-        });
+        config.query(query, variable, function (db_error, db_res) {
+            if(!db_error) {
+                if(db_res) {
+                    return res(db_res[0].password_User);
+                }  
+            }
+            else {
+                console.log(db_error)
+            }
+            return res(false);
+        })
     });
 }
 
@@ -74,10 +67,12 @@ async function verifyPassword (inputPass, dbPass)
 
 async function login (body, res)
 {
+
     let email = body.email;
     let password = body.password;
 
     if(!email || !password) {
+
         return {error: 'Preencha todos os campos.'};
     }
 
@@ -86,7 +81,6 @@ async function login (body, res)
 
     if(!email_check)
     {
-        res.setHeader('Content-Type', 'application/json');
         return {error:{login: 'Email ou senha incorretos.'}};
     }
 
@@ -95,18 +89,16 @@ async function login (body, res)
 
     if (!password_check)
     {
-        res.setHeader('Content-Type', 'application/json');
         return {error:{login: 'Email ou senha incorretos.'}};
     }
     
     
     const data = await schema.findUser(email)
     
-
     // Criação do Token de Login
     const Token = await wbtoken.sign({
-        id: data.id_User,
-        name: data.name_User
+        id: `${data[0]['id_User']}`,
+        name: `${data[0]['name_User']}`
     }, process.env.WBTOKEN_PASS);
 
     // Retorno de TOKEN 

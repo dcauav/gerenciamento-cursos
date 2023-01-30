@@ -1,20 +1,49 @@
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<%- include('../assets/views/parts/header.ejs'); %>
 
 <script type="text/javascript" src="/assets/js/course/course_edit.js"></script>
 <script type="text/javascript" src="/assets/js/course/course_delete.js"></script>
+<script type="text/javascript" src="/assets/js/course/course_switch.js"></script>
 
 <section id="app">    
-    <div id="course-info">
-        <div id="info-body">
-            <img src="<%- data.image_Cour %>" alt="Imagem capa do Curso">
-            <h1>Curso: <%- data.name_Cour %></h1>
-            <h2>Categoria: <%- data.category_Cour %></h2>
-            <h2>Professor Responsável: <%- data.name_User%></h2>
-            <p>Descrição: <%- data.desc_Cour%></p>
+    <%- include('../assets/views/parts/dashboard.ejs'); %>
+    <div class="w-full bg-blue-600" id="course-info">
+        <div class="bg-gray-800 flex flex-row justify-between items-center">
+            <p class="uppercase px-4 text-white "></p>
+            <div class="flex flex-col py-4 px-8 items-end">
+                <div class="space-x-2 flex flex-row items-center">
+                    <% if(data.active_Cour == true){ %>
+                        <button class="rounded-md bg-blue-600 py-2 px-12 disabled:bg-blue-400 disabled:cursor-default text-white hover:bg-blue-500 active:bg-blue-700 uppercase" disabled onclick="c_switch(true)">ativar</button>
+                        <button class="rounded-md bg-red-500 py-2 px-12 text-white hover:bg-red-400 active:bg-red-600 disabled:bg-red-200 disabled:cursor-default uppercase" onclick="c_switch(false)">desativar</button>
+                        <% } %>
+                    <% if(data.active_Cour == false){ %>
+                        <button class="rounded-md bg-blue-600 py-2 px-12 disabled:bg-blue-400 disabled:cursor-default text-white hover:bg-blue-500 active:bg-blue-700 uppercase" onclick="c_switch(true)">ativar</button>
+                        <button class="rounded-md bg-red-500 py-2 px-12 text-white hover:bg-red-400 active:bg-red-600 disabled:bg-red-200 disabled:cursor-default uppercase" disabled onclick="c_switch(false)">desativar</button>
+                    <% } %>
+                </div>
+            </div>
         </div>
-        <div id="info-footer">
-            <button onclick="c_edit()">Editar Curso</button>
-            <button onclick="c_delete()">Excluir Curso</button>
-        </div>
+
+        <div class="flex max-h-screen w-full flex-col items-center">
+            <div class="grid w-full h-[20%] grid-cols-1 sm:grid-cols-3 p-4 gap-4">
+          
+            <img class="rounded-lg w-full h-full object-cover bg-center" src="<%- data.image_Cour %>" alt="Imagem capa do Curso" />
+          
+              <div class="w-full h-full flex flex-col justify-center space-y-2 rounded-xl bg-gray-800 text-white col-span-2 p-6 justify-between">
+                <div class="flex flex-col pb-4 space-y-2">
+                  <h1>Curso: <%- data.name_Cour %></h1>
+                  <h2>Categoria: <%- data.category_Cour %></h2>
+                  <h2>Professor Responsável: <%- data.name_User%></h2>
+                  <p>Descrição: <%- data.desc_Cour%></p>
+                </div>
+                <div class="flex flex-col space-y-2 sm:flex-row sm:space-y-0 w-full sm:space-x-4">
+                  <button class="w-full rounded-md bg-blue-600 py-2 px-12 uppercase text-white hover:bg-blue-500 active:bg-blue-700 disabled:cursor-default disabled:bg-blue-400" onclick="c_edit()">editar</button>
+                  <button class="w-full rounded-md bg-red-500 py-2 px-12 uppercase text-white hover:bg-red-400 active:bg-red-600 disabled:cursor-default disabled:bg-red-200" onclick="c_delete()">excluir</button>
+                </div>
+              </div>
+            </div>
+          </div>          
     </div>
 </section>
+
+<%- include('../assets/views/parts/footer.ejs'); %>
+

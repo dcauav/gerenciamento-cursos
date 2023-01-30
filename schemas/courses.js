@@ -1,7 +1,7 @@
 const config = require("../database/connection.js");
 
 async function createCour (data) {
-    let query = `INSERT INTO tbl_course (name_Cour, teacher_CourFK, category_Cour, desc_Cour, image_Cour) VALUES (?, ?, ?, ?, ?)`;
+    let query = `INSERT INTO tbl_course (name_Cour, teacher_CourFK, category_Cour, desc_Cour, image_Cour, active_Cour) VALUES (?, ?, ?, ?, ?, true)`;
 
     return new Promise((res, error) => {
         config.query(query, data, (db_error, db_res) => {
@@ -41,6 +41,21 @@ async function deleteCour (id) {
         });
     });
 }
+
+async function switchCour (data) {
+    let query = `UPDATE tbl_course SET active_Cour=${data.active} WHERE id_Cour = ${data.id}`;
+   
+    return new Promise((res, error) => {
+        config.query(query, (db_error, db_res) => {
+            if(db_error)
+            {
+                return error({state: {info: "error", desc: db_error}});
+            }
+            return res({state: {info: "success"}});
+        });
+    });
+}
+
 // Busca os dados do usuário
 async function findCour(id) {
 
@@ -57,15 +72,22 @@ async function findCour(id) {
     });
 }
 
-async function findCourList (page) {
-    let min_list = 0;
-    let max_list = 0;
+async function findCourSearch (search) {
+    let query = `SELECT * FROM tbl_course WHERE name_Cour Like '${search}%'`;
+   
+    return new Promise((res, error) => {
+        config.query(query, (db_error, db_res) => {
+            if(db_error)
+            {
+                return error(db_error);
+            }
+            return res(db_res);
+        });
+    });
+}
 
-    (page == 1) ? min_list = 0 : min_list = (page - 1) * 9
-
-    max_list = min_list + 9;
-
-    let query = `SELECT * FROM tbl_course LIMIT ${min_list}, ${max_list}`;
+async function findCourList () {
+    let query = `SELECT * FROM tbl_course`;
 
     return new Promise((res, error) => {
         config.query(query, (db_error, db_res) => {
@@ -82,6 +104,8 @@ module.exports = {
     createCour,
     deleteCour,
     saveCour,
+    switchCour,
     findCour,
+    findCourSearch,
     findCourList
 };

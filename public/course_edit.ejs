@@ -1,37 +1,56 @@
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<%- include('../assets/views/parts/header.ejs'); %>
 
 <script type="text/javascript" src="/assets/js/course/course_save.js"></script>
-<section id="app">  
-    <div id="new-course">
-        <label for="course">Nome do curso:</label>
-        <input type="text" name="course" id="name_cour" value="<%= data.name_Cour %>">
 
-        <label for="teacher">Professor responsável:</label>
-        <select name="teacher" id="teacher_cour">
-            <% teachers.forEach(element => { %>
-                <%  if(element.id_User = data.teacher_CourFK) { %>
-                    <option value="<%=element.id_User%>" selected><%= element.name_User %></option>
-                <% } %>
-                <% if(element.id_User != data.teacher_CourFK) { %> 
-                    <option value="<%=element.id_User%>"><%= element.name_User %></option>
-                <% } %>
-            <% }); %>
-        </select>
+<section class="w-full h-full" id="app">  
 
-        <label for="category">Categoria do curso:</label>
-        <input type="text" name="category" id="category_cour" value="<%= data.category_Cour %>">
+    <%- include('../assets/views/parts/dashboard.ejs', {user: user}); %>
+    
+    <div class="flex flex-col bg-blue-600 min-h-screen w-full">
+        <div class="bg-gray-800 flex flex-row py-6 items-center">
+            <p class="uppercase px-4 text-white"><%= title %></p>
+        </div>
 
-        <label for="image">Capa do curso:</label>
-        <input type="file" name="image" id="img_cour" accept="image/*" data-img-file="<%= data.image_Cour %>">
-        <label for="description">Descrição do curso:</label>
-        <textarea type="text" name="description" id="desc_cour"><%= data.desc_Cour %></textarea>
+        <div class="m-4 bg-gray-800 p-8 rounded-md space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-white">
+            <div class="flex flex-col space-y-2">
+                <label for="course">Digite o nome do curso:</label>
+                <input type="text" name="course" id="name_cour" class="rounded-md bg-white px-2 leading-10 text-gray-800" value="<%= data.name_Cour %>"/>
 
-        <button onclick="c_save()">Salvar</button>
+                <label for="teacher">Escolha o professor responsável:</label>
+                <select class="rounded-md bg-white px-2 p-2 leading-10 text-gray-800" name="teacher" id="teacher_cour">
+                    <% teachers.forEach(element => { %>
+                        <%  if(element.id_User = data.teacher_CourFK) { %>
+                            <option value="<%=element.id_User%>" selected><%= element.name_User %></option>
+                        <% } %>
+                        <% if(element.id_User != data.teacher_CourFK) { %> 
+                            <option value="<%=element.id_User%>"><%= element.name_User %></option>
+                        <% } %>
+                    <% }); %>
+                </select>
+
+                <label for="category">Digite a categoria do curso:</label>
+                <input type="text" name="category" id="category_cour" class="rounded-md bg-white px-2 leading-10 text-gray-800" value="<%= data.category_Cour %>"/>
+            </div>
+            <div class="flex flex-col space-y-2">
+                <label for="image">Faça upload da capa do curso:</label>
+                <input type="file" name="image" id="img_cour" class="file:bg-blue-600 file:text-white file:hover:cursor-pointer file:hover:bg-blue-500 file:active:bg-blue-700 file:px-8 file:py-2 file:border-0 file:rounded-md" data-img-file="<%= data.image_Cour %>"/>
+
+                <label for="description">Digite a descrição do curso:</label>
+                <textarea type="text" name="description" id="desc_cour" maxlength="256" class="resize-none rounded-md h-28 text-gray-800 p-2"><%= data.desc_Cour %></textarea>
+            </div>
+        </div>
+        <div class="pt-2">
+            <button class="w-full rounded-md bg-blue-600 py-2 px-12 uppercase text-white hover:bg-blue-500 active:bg-blue-700 disabled:cursor-default disabled:bg-blue-400" onclick="c_salvar()">editar</button>
+        </div>
     </div>
+
 </section>
+
+<%- include('../assets/views/parts/footer.ejs'); %>
 <script>
 
-async function test() {
+async function getImage() {
     const input = document.getElementById('img_cour')
     const getFile = await axios.get(input.dataset.imgFile, {responseType: 'blob'}).then(function(res){
         return res
@@ -44,5 +63,5 @@ async function test() {
     input.files = dataTransfer.files;
 }   
 
-test()
+getImage()
 </script>

@@ -18,6 +18,8 @@ async function c_create() {
         desc_cour: desc,
         img_cour: JSON.stringify(url.data).replaceAll('"', "")
     })
-    .then((res) => console.log(res))
+    .then((res) => {
+        window.location.replace("/")
+    })
     .catch((error) => console.log(error))
 }

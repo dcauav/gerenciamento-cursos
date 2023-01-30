@@ -1,0 +1,20 @@
+<script type="text/javascript" src="/assets/js/user/user_desconect.js"></script>
+
+<section class="w-[20%] h-screen bg-gray-800">
+    <div class="flex flex-col justify-between h-full">
+        <div class="dash-header">
+            <div class="p-8">
+                <img src="/assets/img/users/professor_teste.png">
+            </div>
+            <div class="px-2">
+                <p class="text-white text-center">Bem vindo, <%= user.name %>!</p>
+            </div>
+            <div class="flex flex-col space-y-1 pt-4">
+                <a class="text-center text-white bg-blue-600 hover:bg-blue-500 hover:ease-in duration-150  active:bg-blue-700 p-2" href="/">Cursos</a>
+            </div>
+        </div>
+        <div class="flex flex-col items-center text-white hover:cursor-pointer hover:ease-in duration-150 hover:bg-red-500 active:bg-red-600 p-2">
+            <a onclick="u_desconect()">Desconectar</a>
+        </div>
+    </div>
+</section>
