@@ -1,4 +1,3 @@
-
 async function c_create() {
     let img = document.getElementById("img_cour");
     let name = document.getElementById("name_cour").value;

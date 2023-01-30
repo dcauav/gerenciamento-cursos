@@ -1,10 +1,10 @@
-function c_delete () {
+async function c_delete () {
     const url_path = (window.location.href).toLowerCase();
     const param = new URL(url_path);
 
-    const id = param.searchParams.get("id");
+    const id = {id : param.pathname.replace("/cursos/info/id=", "")}
 
-    axios.post("/api/delete/course", id).then(function(res) {
-        document.getElementById("info-footer").append("<script> window.location.replace(/cursos/list/1)</script>");
+    await axios.post("/api/delete/course", id).then(function(res) {
+        window.location.replace('/cursos/list/1')
     })
 }

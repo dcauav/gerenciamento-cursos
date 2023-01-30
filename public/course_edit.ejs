@@ -22,12 +22,27 @@
         <input type="text" name="category" id="category_cour" value="<%= data.category_Cour %>">
 
         <label for="image">Capa do curso:</label>
-        <input type="file" name="image" id="img_cour" accept="image/*">
-
+        <input type="file" name="image" id="img_cour" accept="image/*" data-img-file="<%= data.image_Cour %>">
         <label for="description">Descrição do curso:</label>
         <textarea type="text" name="description" id="desc_cour"><%= data.desc_Cour %></textarea>
 
         <button onclick="c_save()">Salvar</button>
     </div>
 </section>
+<script>
 
+async function test() {
+    const input = document.getElementById('img_cour')
+    const getFile = await axios.get(input.dataset.imgFile, {responseType: 'blob'}).then(function(res){
+        return res
+    } )
+ 
+    const imgFile = new File([getFile.data], "image.jpg")
+
+    const dataTransfer = new DataTransfer();
+    dataTransfer.items.add(imgFile);
+    input.files = dataTransfer.files;
+}   
+
+test()
+</script>

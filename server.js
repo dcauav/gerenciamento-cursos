@@ -38,6 +38,7 @@ server.set('views', './');
 
 // Paginas
 const public = process.env.PUBLIC_PATH;
+const url_p = process.env.URL_PATH;
 
 server.get('/', logged, (req, res) => {
     
@@ -106,38 +107,55 @@ server.post('/api/users/list', async (req, res) => {
 })
 
 // Cursos
+
+// Lista 9 cursos com base no número do parâmetro <page>
 server.get('/api/courses/list/:page', async(req, res) => {
     const page = req.params.page.split('=')[1];
     res.send(await getCourse.getCourList(res, page));
 })
 
+// Lista as informações de um cursos com base no <id>
 server.get('/api/courses/get/:id', async(req, res) => {
     const id = req.params.id.split('=')[1];
     res.send(await getCourse.getCourInfo(res, id));
 })
 
-server.post('/api/create/course', bodyParser.json(), (req, res) => {
+server.post('/api/create/course', bodyParser.json(), async (req, res) => {
     const data = req.body
 
-    res.send(createCourse(data, res))
+    if (!data) {
+        return res.status(404).send({error:{desc: 'Parâmetros não fornecidos.'}})
+    }
+
+    res.status(200).send(await createCourse(data, res))
 })
 
-server.post('/api/save/course', bodyParser.json(), (req, res) => {
+server.post('/api/save/course', bodyParser.json(), async (req, res) => {
     const data = req.body
 
-    res.send(saveCourse(data, res))
+    if (!data) {
+        return res.status(404).send({error:{desc: 'Parâmetros não fornecidos.'}})
+    }
+
+    res.status(200).send(await saveCourse(data, res))
 })
 
-server.post('/api/delete/course', bodyParser.json(), (req, res) => {
-    const id = req.body
+server.post('/api/delete/course', bodyParser.json(), async (req, res) => {
+    const id = JSON.stringify(req.body.id)
 
-    res.send(deleteCourse(id, res))
+    if (!id) {
+        return res.status(404).send({error:{desc: 'Parâmetro não fornecido.'}})
+    }
+    res.status(200).send(await deleteCourse(id, res))
 })
+
 
 // Uploads
+
 const formidable = require('formidable');
 const fs = require('fs');
-const path = require('path')
+const path = require('path');
+const { config } = require("dotenv");
 
 server.post('/api/upload/course', (req, res, next) => {
     // req.course_name.toLowerCase().replace(" ", "_") + "_" + new Date().getFullYear();
@@ -146,7 +164,7 @@ server.post('/api/upload/course', (req, res, next) => {
     form.multiples = false;
     form.maxFileSize = 50 * 1024 * 1024; // 5MB
     
-    form.parse(req, function(err, fields, files){    
+    form.parse(req, async function(err, fields, files){    
 
         let newFilename = fields.course_name.toLocaleLowerCase().replaceAll(" ", "_") + ".jpg";
         let coursePath = fields.course_name.toLocaleLowerCase().replaceAll(" ", "_") + "_" +new Date().getFullYear();

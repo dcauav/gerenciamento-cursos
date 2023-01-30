@@ -14,6 +14,33 @@ async function createCour (data) {
     });
 }
 
+async function saveCour (data) {
+    let query = `UPDATE tbl_course SET name_Cour = ?, teacher_CourFK = ?, category_Cour = ?, desc_Cour = ?, image_Cour= ? WHERE id_Cour = ?`;
+
+    return new Promise((res, error) => {
+        config.query(query, data, (db_error, db_res) => {
+            if(db_error)
+            {
+                return error(db_error);
+            }
+            return res(db_res[0]);
+        });
+    });
+}
+
+async function deleteCour (id) {
+    let query = `DELETE FROM tbl_course WHERE id_Cour = ${id}`;
+   
+    return new Promise((res, error) => {
+        config.query(query, (db_error, db_res) => {
+            if(db_error)
+            {
+                return error({state: {info: "error", desc: db_error}});
+            }
+            return res({state: {info: "success"}});
+        });
+    });
+}
 // Busca os dados do usuário
 async function findCour(id) {
 
@@ -53,6 +80,8 @@ async function findCourList (page) {
 
 module.exports = {
     createCour,
+    deleteCour,
+    saveCour,
     findCour,
     findCourList
 };
