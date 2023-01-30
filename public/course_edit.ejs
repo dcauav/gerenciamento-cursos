@@ -1,0 +1,33 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/course/course_save.js"></script>
+<section id="app">  
+    <div id="new-course">
+        <label for="course">Nome do curso:</label>
+        <input type="text" name="course" id="name_cour" value="<%= data.name_Cour %>">
+
+        <label for="teacher">Professor responsável:</label>
+        <select name="teacher" id="teacher_cour">
+            <% teachers.forEach(element => { %>
+                <%  if(element.id_User = data.teacher_CourFK) { %>
+                    <option value="<%=element.id_User%>" selected><%= element.name_User %></option>
+                <% } %>
+                <% if(element.id_User != data.teacher_CourFK) { %> 
+                    <option value="<%=element.id_User%>"><%= element.name_User %></option>
+                <% } %>
+            <% }); %>
+        </select>
+
+        <label for="category">Categoria do curso:</label>
+        <input type="text" name="category" id="category_cour" value="<%= data.category_Cour %>">
+
+        <label for="image">Capa do curso:</label>
+        <input type="file" name="image" id="img_cour" accept="image/*">
+
+        <label for="description">Descrição do curso:</label>
+        <textarea type="text" name="description" id="desc_cour"><%= data.desc_Cour %></textarea>
+
+        <button onclick="c_save()">Salvar</button>
+    </div>
+</section>
+

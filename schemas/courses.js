@@ -1,5 +1,19 @@
 const config = require("../database/connection.js");
 
+async function createCour (data) {
+    let query = `INSERT INTO tbl_course (name_Cour, teacher_CourFK, category_Cour, desc_Cour, image_Cour) VALUES (?, ?, ?, ?, ?)`;
+
+    return new Promise((res, error) => {
+        config.query(query, data, (db_error, db_res) => {
+            if(db_error)
+            {
+                return error(db_error);
+            }
+            return res(db_res[0]);
+        });
+    });
+}
+
 // Busca os dados do usuário
 async function findCour(id) {
 
@@ -38,6 +52,7 @@ async function findCourList (page) {
 }
 
 module.exports = {
+    createCour,
     findCour,
     findCourList
 };

@@ -1,0 +1,28 @@
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script type="text/javascript" src="/assets/js/course/course_create.js"></script>
+<section id="app">  
+    <div id="new-course">
+        <label for="course">Digite o nome do curso:</label>
+        <input type="text" name="course" id="name_cour">
+
+        <label for="teacher">Escolha o professor responsável:</label>
+        <select name="teacher" id="teacher_cour">
+            <% teachers.forEach(element => { %>
+                <option value="<%=element.id_User%>"><%= element.name_User %></option>
+            <% }); %>
+        </select>
+
+        <label for="category">Digite a categoria do curso:</label>
+        <input type="text" name="category" id="category_cour">
+
+        <label for="image">Faça upload da capa do curso:</label>
+        <input type="file" name="image" id="img_cour">
+
+        <label for="description">Digite a descrição do curso:</label>
+        <textarea type="text" name="description" id="desc_cour"></textarea>
+
+        <button onclick="create()">Criar</button>
+    </div>
+</section>
+

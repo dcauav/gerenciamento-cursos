@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 
 const config = require("../../database/connection.js");
 
-const find = require("../../schemas/users.js");
+const schema = require("../../schemas/users.js");
 const { connect } = require('../../database/connection.js');
 
 // Verifica se o email existe na base de dados
@@ -100,7 +100,7 @@ async function login (body, res)
     }
     
     
-    const data = await find(email)
+    const data = await schema.findUser(email)
     
 
     // Criação do Token de Login

@@ -1,10 +1,17 @@
-<section id="app">
-    
+<script type="text/javascript" src="/assets/js/course/course_edit.js"></script>
+<script type="text/javascript" src="/assets/js/course/course_delete.js"></script>
+<section id="app">    
     <div id="course-info">
-        <img src="<%- data.image_Cour %>" alt="Imagem capa do Curso">
-        <h1>Curso: <%- data.name_Cour %></h1>
-        <h2>Categoria: <%- data.category_Cour %></h2>
-        <h2>Professor Responsável: <%- data.name_User%></h2>
-        <p>Descrição: <%- data.desc_Cour%></p>
+        <div id="info-body">
+            <img src="<%- data.image_Cour %>" alt="Imagem capa do Curso">
+            <h1>Curso: <%- data.name_Cour %></h1>
+            <h2>Categoria: <%- data.category_Cour %></h2>
+            <h2>Professor Responsável: <%- data.name_User%></h2>
+            <p>Descrição: <%- data.desc_Cour%></p>
+        </div>
+        <div id="info-footer">
+            <button onclick="c_edit()">Editar Curso</button>
+            <button onclick="c_delete()">Excluir Curso</button>
+        </div>
     </div>
 </section>
