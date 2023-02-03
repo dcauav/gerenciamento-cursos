@@ -1,5 +1,22 @@
 # Documentação - GRC Cursos
 
+## Info
+
+O projeto foi feito utilizando NodeJS, junto ao seguintes módulos:
+
+- Express;
+- Cors;
+- BodyParser;
+- CookieParser;
+- JSON-Web-Token;
+- BCrypt;
+- MySQL;
+
+**Para login, utilize:**
+Email: professor@teste.com
+Senha: admin@123
+
+
 ## Instalando
 
 ### Depêndencias
@@ -125,14 +142,14 @@ Salva alterações em um cursos já existente com base nos dados fornecidos pela
 
 Deleta um curso com base no parâmetro {id: (int)}.
 ```
-server.post('/api/delete/course', bodyParser.json(), async (req, res) => {
-    const id = JSON.stringify(req.body.id);
+    server.post('/api/delete/course', bodyParser.json(), async (req, res) => {
+        const id = JSON.stringify(req.body.id);
 
-    if (!id) {
-        return res.status(404).send({error:{desc: 'Parâmetro não fornecido.'}});
-    }
-    res.status(200).send(await deleteCourse(id, res));
-})
+        if (!id) {
+            return res.status(404).send({error:{desc: 'Parâmetro não fornecido.'}});
+        }
+        res.status(200).send(await deleteCourse(id, res));
+    })
 ```
 
 Ativa/Desativa um Curso com base nos parâmetros {id: (int), active: (bool)}.
