@@ -30,8 +30,13 @@ Para rodar o projeto será necessário:
 
 ### Iniciando
 
-Ao baixar o projeto, importe o arquivo grc_cursos.sql da pasta raiz para o MySQL. 
-> Após a importação, realize a configuração de conexão no arquivo connection.js da pasta '/database'.
+Ao baixar o projeto, você primeiro deve criar um Banco de Dados no MySQL com o nome de grc_cursos;
+
+Após criar, importe o arquivo grc_cursos.sql da pasta raiz para o banco de dados criado e essa parte está pronta. 
+
+Antes de prosseguir, certifique-se de realizar a configuração de conexão no arquivo connection.js da pasta '/database'.
+
+###
 
 Para iniciar o servidor, abra um terminal na pasta onde está instalado o projeto e utilize o comando 'npm run dev'.
 > Atenção: O servidor irá iniciar na URL 'http://localhost:3030'.
