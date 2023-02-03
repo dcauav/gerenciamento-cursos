@@ -19,7 +19,7 @@ Email: professor@teste.com
 Senha: admin@123
 
 
-## Instalando
+## Instalação
 
 ### Depêndencias
 
