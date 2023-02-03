@@ -13,7 +13,9 @@ O projeto foi feito utilizando NodeJS, junto ao seguintes módulos:
 - MySQL;
 
 **Para login, utilize:**
+
 Email: professor@teste.com
+
 Senha: admin@123
 
 
