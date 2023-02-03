@@ -295,7 +295,148 @@ O servidor utiliza controladores para intermediar as requisições com o banco d
 
 ### Cursos
 
+**Novo Curso - '/controllers/course/create.js'**
+```
+    async function create (body, res) {
+        
+        let name = body.name_cour;
+        let teacher_CourFK = body.teacher_cour;
+        let category_Cour = body.category_cour;
+        let desc_Cour = body.desc_cour;
+        let image_Cour = body.img_cour;
+        
+        const data = [
+            name,
+            teacher_CourFK,
+            category_Cour,
+            desc_Cour,
+            image_Cour
+        ]
 
+        schema.createCour(data)
+        
+    }
+```
+> Recebe um JSON e define a constante 'data' com os parâmetros recebidos {name_cour:(string), teacher_cour: (string), category_cour: (string), desc_cour: (string), img_cour: (blob)};
+
+> Por fim utiliza a função 'createCour(data)' para criar um novo registro na tabela 'tbl_course'.
+
+**Editar Curso - '/controllers/course/save.js'**
+```
+    async function save (body, res){
+
+        let name = body.name_cour;
+        let teacher_CourFK = body.teacher_cour;
+        let category_Cour = body.category_cour;
+        let desc_Cour = body.desc_cour;
+        let image_Cour = body.img_cour;
+        let id_Cour = body.id_cour;
+        
+        const data = [
+            name,
+            teacher_CourFK,
+            category_Cour,
+            desc_Cour,
+            image_Cour,
+            id_Cour
+        ]
+        
+        return await schema.saveCour(data);
+    }
+```
+> Recebe um JSON e define a constante 'data' com os parâmetros recebidos {name_cour:(string), teacher_cour: (string), category_cour: (string), desc_cour: (string), img_cour: (blob), id_cour: (int)};
+
+> Por fim utiliza a função 'saveCour(data)' para editar um registro na tabela 'tbl_course' com base no parâmetro {id_cour: (int)} armazenado na constante 'data'.
+
+**Excluir Curso - '/controllers/course/save.js'**
+
+```
+    async function delete_c (id, res){
+        return await schema.deleteCour(id)
+    }
+```
+> Recebe um parâmetro {id: (int)} e utiliza a função deleteCour(id) para excluir um registro na tabela 'tbl_course'.
+
+**Ativar/Desativar Curso - '/controllers/course/save.js'**
+
+```
+    async function switch_c (data, res){
+        return await schema.switchCour(data)
+    }
+```
+> Recebe um JSON 'data' com os parâmetros {id: (int), active: (bool)} e utiliza a função switchCour(data) para alterar o estado de um curso {id} para ativo ou inativo {active}.
 
 ## Schemas
 
+A pasta de schemas armazena agrupamentos de query. Existe um agrupamento para cada tabela.
+
+> Resumidamente, cada schema contém query pré-prontas com base nas operações SELECT, INSERT, UPDATE e DELETE.
+
+> Qualquer alteração em nomênclaturas do banco de dados deve ser alterada também em sua respectiva query e schema.
+
+### SELECTs
+
+**Usuários- '/schemas/users.js***
+
+```
+    findUser(email);
+```
+> Seleciona e retorna os dados do usuário com email igual a {email}.
+
+```
+    findUserList();
+```
+> Seleciona e retorna os dados de todos os usuários cadastrados.
+
+**Cursos - '/schemas/courses.js**
+
+```
+    findCour(id);
+```
+> Seleciona e retorna os dados do curso com ID igual a {id}.
+
+```
+    findCourSearch(search);
+```
+> Seleciona e retorna os dados de todos os cursos cujo nome começa com {search}.
+
+```
+    findCourList();
+```
+> Seleciona e retorna os dados de todos os cursos cadastrados.
+    
+### INSERTs
+
+**Cursos - '/schemas/courses.js**
+
+```
+    createCour(data);
+```
+> Realiza um insert utilizando os parâmetros contidos em {data}.
+
+### UPDATEs
+
+**Cursos - '/schemas/courses.js**
+
+```
+    saveCour(data);
+```
+> Atualiza um registro com base nos parâmetros contidos em {data}.
+
+> Observação: Mais informações na seção de controladores - Editar Curso - da documentação.
+
+```
+    switchCour(data);
+```
+> Define um registro como Ativo/Inativo com base nos parâmetros contidos em {data}.
+
+> Observação: Mais informações na seção de controladores - Ativar/Desativar Curso - da documentação.
+
+### DELETEs
+
+**Cursos - '/schemas/courses.js**
+
+```
+    deleteCour(id);
+```
+> Deleta um registro com base no parâmetro {id}.
