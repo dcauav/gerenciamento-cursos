@@ -25,7 +25,7 @@ SET time_zone = "+00:00";
 
 --
 -- Estrutura da tabela `tbl_course`
---
+-- -
 
 CREATE TABLE `tbl_course` (
   `id_Cour` int(11) NOT NULL,
