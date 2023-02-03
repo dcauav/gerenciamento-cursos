@@ -12,7 +12,7 @@ O projeto foi feito utilizando NodeJS, junto ao seguintes módulos:
 - BCrypt;
 - MySQL;
 
-**Para login, utilize:**
+**Para testar o projeto, utilize para login:**
 
 Email: professor@teste.com
 
@@ -181,5 +181,121 @@ Para requisitar um arquivo da pasta assets, um caminho pode ser estabelecido a p
 
 > Atenção: Caminhos com mais ou menos diretórios devem ser definidos com a quantia equivalente de argumentos ':exemplo'.
 
+## Controladores
 
+O servidor utiliza controladores para intermediar as requisições com o banco de dados. 
+
+> O tratamento dos dados recebidos e enviados é feito pelos controladores.
+
+### Usuários
+
+**Conexão (Login) - '/controllers/users/login.js'**
+
+```
+    async function login (body, res)
+    {
+
+        let email = body.email;
+        let password = body.password;
+
+        if(!email || !password) {
+
+            return {error: 'Preencha todos os campos.'};
+        }
+
+        // Verifica Email e Senha
+        const email_check = await verifyEmail(email);
+
+        if(!email_check)
+        {
+            return {error:{login: 'Email ou senha incorretos.'}};
+        }
+
+        const hashed = await getDB_pass(email);
+        const password_check = await verifyPassword(password, hashed)
+
+        if (!password_check)
+        {
+            return {error:{login: 'Email ou senha incorretos.'}};
+        }
+        
+        
+        const data = await schema.findUser(email)
+        
+        // Criação do Token de Login
+        const Token = await wbtoken.sign({
+            id: `${data[0]['id_User']}`,
+            name: `${data[0]['name_User']}`
+        }, process.env.WBTOKEN_PASS);
+
+        // Retorno de TOKEN 
+        res.cookie('Token', Token)
+        res.sendStatus(200)
+
+        return;
+    }
+```
+> É responsável pela operação de login, recebe os parâmetros {email: (string), password: (string)} e então verifica se: são vazios, se o email está cadastro e compara com o hash armazenado no banco de dados. 
+
+> Caso seja um sucesso retorna um web-token com as informações do login.
+
+> Caso algo dê errado durante o processo, retorna um JSON explicando o erro.
+
+**Verificação de Login - '/controllers/users/logged.js'**
+```
+    const wbtoken = require('jsonwebtoken');
+
+    async function logged(req, res, next) {
+        let Auth = req.cookies.Token || null;
+
+        if(typeof(Auth) == 'undefined' || Auth === '' || Auth == null) {
+            return res.redirect('/login');
+        }
+        else {
+            try {
+                Token = await wbtoken.verify(Auth, process.env.WBTOKEN_PASS);
+                next();
+            }
+            catch (err) {
+                return res.redirect('/login');
+            }
+        }
+    }
+```
+> Realiza uma verificação de web-token para confirmar login.
+
+> Em casos de não haver web-token, ou ser inválido, realiza um redirect para a tela de login.
+
+> É requisitado pela função 'logged' logo após ao caminho da rota.
+```
+    server.get('/', logged, async (req, res) => {
+            
+        const courses = await axios.get('/api/courses/list').then(response => response.data);
+
+        const user = await tokendata(req, res)
+
+        res.render(public+"course_list.ejs", {
+            title : "Cursos",
+            list : courses,
+            user : user
+        })
+    })
+```
+
+**Desconexão (Logout) - '/controllers/users/desconect.js'**
+
+```
+    async function desconect(res) {
+        res.clearCookie('Token');
+        res.redirect('/login');
+    }
+```
+
+> Limpa o cookie 'token' armazenado e redireciona o usuário para a página de login '/login'.
+
+### Cursos
+
+
+
+## Schemas
 
