@@ -40,7 +40,10 @@ Antes de prosseguir, certifique-se de realizar a configuração de conexão no a
 
 **Servidor**
 
-Para iniciar o servidor, abra um terminal na pasta onde está instalado o projeto e utilize o comando 'npm run dev'.
+Para iniciar, abra um terminal na pasta onde está instalado o projeto e utilize o comando 'npm i'. 
+Esse comando irá instalar as dependencias do servidor.
+
+Ao terminar a instalação utilize o comando 'npm run dev', para ligar o servidor.
 
 > Atenção: O servidor irá iniciar na URL 'http://localhost:3030'.
 
