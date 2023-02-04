@@ -87,7 +87,7 @@ async function findCourSearch (search) {
 }
 
 async function findCourList () {
-    let query = `SELECT * FROM tbl_course`;
+    let query = `SELECT * FROM tbl_course  ORDER BY desc_Cour ASC, name_Cour ASC`;
 
     return new Promise((res, error) => {
         config.query(query, (db_error, db_res) => {
